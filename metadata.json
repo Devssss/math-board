@@ -1,0 +1,6 @@
+{
+  "name": "KidBoard Base",
+  "description": "A fun, colorful achievement and exploration board for kids on the Base network.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["Onchain Interactions", "Farcaster MiniApp"]
+}
