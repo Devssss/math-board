@@ -17,7 +17,7 @@ import {
   EthBalance 
 } from '@coinbase/onchainkit/identity';
 import { motion } from 'motion/react';
-import { Sparkles, Trophy, Wallet as WalletIcon, TrendingUp, Star, Search, ShieldCheck, Compass, Palette, BookOpen } from 'lucide-react';
+import { Sparkles, Trophy, Wallet as WalletIcon, TrendingUp, Star, Search, ShieldCheck, Compass, Palette, BookOpen, Coins } from 'lucide-react';
 
 const CATEGORIES = {
   exploration: {
@@ -275,21 +275,30 @@ function QuestCard({ title, description, reward, category, actionText }: any) {
       layout
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all group"
+      className="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all group flex flex-col h-full"
     >
-      <div className={`w-14 h-14 ${cat.bg} ${cat.text} rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110`}>
-        {cat.icon}
+      <div className="flex justify-between items-start mb-4">
+        <div className={`w-14 h-14 ${cat.bg} ${cat.text} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm`}>
+          {cat.icon}
+        </div>
+        <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${cat.bg} ${cat.text} border border-current/10`}>
+          {cat.label}
+        </div>
       </div>
-      <div className="flex items-center gap-2 mb-1">
-        <span className={`text-[10px] font-black uppercase tracking-widest ${cat.text}`}>{cat.label}</span>
-      </div>
-      <h3 className="text-xl font-bold mb-2 font-kids">{title}</h3>
-      <p className="text-slate-500 text-sm mb-4">{description}</p>
-      <div className="flex justify-between items-center">
-        <span className={`font-bold ${cat.text}`}>
-          +{reward} $KID
-        </span>
-        <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors">
+      
+      <h3 className="text-xl font-bold mb-2 font-kids text-slate-900">{title}</h3>
+      <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-2">{description}</p>
+      
+      <div className="flex justify-between items-end pt-4 border-t border-slate-50">
+        <div className="flex flex-col">
+          <span className="text-[10px] text-slate-400 font-bold uppercase mb-0.5 ml-0.5">Reward</span>
+          <div className={`flex items-center gap-1.5 ${cat.text} font-black text-2xl italic`}>
+            <Coins className="w-5 h-5 mb-0.5" />
+            {reward}
+            <span className="text-[10px] font-bold not-italic ml-0.5 opacity-80">$KID</span>
+          </div>
+        </div>
+        <button className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-sm active:scale-95">
           {actionText}
         </button>
       </div>
