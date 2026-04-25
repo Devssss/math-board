@@ -17,10 +17,38 @@ import {
   EthBalance 
 } from '@coinbase/onchainkit/identity';
 import { motion } from 'motion/react';
-import { Sparkles, Trophy, Wallet as WalletIcon, TrendingUp, Star, Search, ShieldCheck } from 'lucide-react';
+import { Sparkles, Trophy, Wallet as WalletIcon, TrendingUp, Star, Search, ShieldCheck, Compass, Palette, BookOpen } from 'lucide-react';
+
+const CATEGORIES = {
+  exploration: {
+    label: 'Exploration',
+    icon: <Compass className="w-5 h-5" />,
+    color: 'indigo',
+    description: 'Discover new places and projects on the Base network.',
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600'
+  },
+  creation: {
+    label: 'Creation',
+    icon: <Palette className="w-5 h-5" />,
+    color: 'emerald',
+    description: 'Build, draw, and mint your own digital creations.',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600'
+  },
+  learning: {
+    label: 'Learning',
+    icon: <BookOpen className="w-5 h-5" />,
+    color: 'amber',
+    description: 'Master new skills and solve on-chain challenges.',
+    bg: 'bg-amber-50',
+    text: 'text-amber-600'
+  }
+};
 
 export default function Home() {
   const [isReady, setIsReady] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -29,6 +57,61 @@ export default function Home() {
     };
     init();
   }, []);
+
+  const quests = [
+    { 
+      id: 1,
+      title: "Math Wizard", 
+      category: 'learning',
+      description: "Solve 10 multiplication problems on-chain.",
+      reward: 150,
+      actionText: "Start"
+    },
+    { 
+      id: 2,
+      title: "Savings Pro", 
+      category: 'exploration',
+      description: "Stake 100 $KID in your digital piggy bank.",
+      reward: 300,
+      actionText: "Stake"
+    },
+    { 
+      id: 3,
+      title: "Identity Badge", 
+      category: 'exploration',
+      description: "Register your unique on-chain kid name.",
+      reward: 500,
+      actionText: "Claim"
+    },
+    { 
+      id: 4,
+      title: "Digital Artist", 
+      category: 'creation',
+      description: "Draw and mint your first NFT on Base.",
+      reward: 400,
+      actionText: "Mint"
+    },
+    { 
+      id: 5,
+      title: "Eco Friend", 
+      category: 'exploration',
+      description: "Donate 50 $KID to carbon offset projects.",
+      reward: 200,
+      actionText: "Donate"
+    },
+    { 
+      id: 6,
+      title: "Code Learner", 
+      category: 'learning',
+      description: "Complete the first block-coding challenge.",
+      reward: 250,
+      actionText: "Solve"
+    }
+  ];
+
+  const filteredQuests = activeCategory 
+    ? quests.filter(q => q.category === activeCategory)
+    : quests;
 
   if (!isReady) return null;
 
@@ -101,40 +184,50 @@ export default function Home() {
             <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-3xl opacity-50"></div>
           </motion.div>
 
+          {/* Category Filters */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-bold font-kids text-slate-800">Choose your Path:</h3>
+            <div className="flex flex-wrap gap-3">
+              <button 
+                onClick={() => setActiveCategory(null)}
+                className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 ${!activeCategory ? 'bg-slate-900 text-white shadow-lg' : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50'}`}
+              >
+                All Quests
+              </button>
+              {Object.entries(CATEGORIES).map(([key, cat]) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveCategory(key)}
+                  className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 ${activeCategory === key ? `${cat.bg} ${cat.text} shadow-md border-2 border-current` : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50'}`}
+                >
+                  {cat.icon}
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            {activeCategory && (
+              <motion.p 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-slate-500 text-sm font-medium italic"
+              >
+                {CATEGORIES[activeCategory as keyof typeof CATEGORIES].description}
+              </motion.p>
+            )}
+          </div>
+
           {/* Quests Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <QuestCard 
-              title="Math Wizard" 
-              description="Solve 10 multiplication problems on-chain."
-              reward={150}
-              icon={<Sparkles className="w-7 h-7" />}
-              color="indigo"
-              actionText="Start"
-            />
-            <QuestCard 
-              title="Savings Pro" 
-              description="Stake 100 $KID in your digital piggy bank."
-              reward={300}
-              icon={<WalletIcon className="w-7 h-7" />}
-              color="emerald"
-              actionText="Stake"
-            />
-            <QuestCard 
-              title="Identity Badge" 
-              description="Register your unique on-chain kid name."
-              reward={500}
-              icon={<ShieldCheck className="w-7 h-7" />}
-              color="amber"
-              actionText="Claim"
-            />
-            <QuestCard 
-              title="Eco Friend" 
-              description="Donate 50 $KID to carbon offset projects."
-              reward={200}
-              icon={<TrendingUp className="w-7 h-7" />}
-              color="sky"
-              actionText="Donate"
-            />
+            {filteredQuests.map(quest => (
+              <QuestCard 
+                key={quest.id}
+                title={quest.title}
+                description={quest.description}
+                reward={quest.reward}
+                category={quest.category}
+                actionText={quest.actionText}
+              />
+            ))}
           </div>
         </div>
 
@@ -173,26 +266,27 @@ export default function Home() {
   );
 }
 
-function QuestCard({ title, description, reward, icon, color, actionText }: any) {
-  const colorMap: any = {
-    indigo: "bg-indigo-50 text-indigo-500",
-    emerald: "bg-emerald-50 text-emerald-500",
-    amber: "bg-amber-50 text-amber-500",
-    sky: "bg-sky-50 text-sky-500",
-  };
+function QuestCard({ title, description, reward, category, actionText }: any) {
+  const cat = CATEGORIES[category as keyof typeof CATEGORIES];
 
   return (
     <motion.div 
       whileHover={{ y: -5 }}
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
       className="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all group"
     >
-      <div className={`w-14 h-14 ${colorMap[color]} rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110`}>
-        {icon}
+      <div className={`w-14 h-14 ${cat.bg} ${cat.text} rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110`}>
+        {cat.icon}
+      </div>
+      <div className="flex items-center gap-2 mb-1">
+        <span className={`text-[10px] font-black uppercase tracking-widest ${cat.text}`}>{cat.label}</span>
       </div>
       <h3 className="text-xl font-bold mb-2 font-kids">{title}</h3>
       <p className="text-slate-500 text-sm mb-4">{description}</p>
       <div className="flex justify-between items-center">
-        <span className={`font-bold ${color === 'emerald' ? 'text-emerald-600' : 'text-blue-600'}`}>
+        <span className={`font-bold ${cat.text}`}>
           +{reward} $KID
         </span>
         <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors">
