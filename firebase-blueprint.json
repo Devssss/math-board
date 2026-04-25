@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "A kid user on the platform.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "totalXp": { "type": "number" },
+        "totalKid": { "type": "number" },
+        "level": { "type": "number" },
+        "streak": { "type": "number" }
+      },
+      "required": ["displayName", "totalXp"]
+    },
+    "completedQuest": {
+      "title": "Completed Quest",
+      "description": "Record of a quest completion by a user.",
+      "type": "object",
+      "properties": {
+        "questId": { "type": "number" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "reward": { "type": "number" }
+      },
+      "required": ["questId", "completedAt", "reward"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "Primary user profiles."
+    },
+    "/users/{userId}/completedQuests/{questId}": {
+      "schema": "completedQuest",
+      "description": "Quests completed by the specific user."
+    }
+  }
+}
